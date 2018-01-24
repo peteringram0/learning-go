@@ -4,7 +4,7 @@ Small peer to peer messaging application
 
 ## To Develop
 ````javascript
-$ go run ./src/peteringram0/main.go
+$ go run ./src/peteringram0/main.go --port 1234
 ````
 
 ## To Build

@@ -8,10 +8,16 @@ import (
 	"encoding/json"
 	"bytes"
 	"io/ioutil"
+	"flag"
+	"github.com/fatih/color"
+	"strconv"
 )
 
+/**
+ * My data strucutre {data: 'string'}
+ */
 type Message struct {
-	Data string `json:"data"`
+	Data string
 }
 
 /**
@@ -19,22 +25,36 @@ type Message struct {
  */
 func main() {
 
-	go openLocalConnection()
+	// Grab the set flag port
+	port := flag.Int("port", 7777, "Please enter a port")
+	flag.Parse()
 
+	// Convert port to a string
+	var portStr = strconv.Itoa(*port);
+
+	// Run in parallel - Open the server
+	go openLocalConnection(portStr)
+
+	// Tell the user who they are
+	// @question why cant this sit inside the go function above ?
+	color.HiGreen("My Address: http://localhost:" + portStr)
+
+	// Input partners address
+	color.HiRed("Partners Address:")
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Connection IP: ")
-	server, _ := reader.ReadString('\n')
+	partner, _ := reader.ReadString('\n')
 
-	sendMsg(server)
+	// Send the msg
+	sendMsg(partner)
 
 }
 
 /**
  * Open a local connection for people to send POST requests to
  */
-func openLocalConnection() {
+func openLocalConnection(port string) {
 	http.HandleFunc("/", nil)
-	http.ListenAndServe(":7777", logRequest(http.DefaultServeMux))
+	http.ListenAndServe(string(":" + port), logRequest(http.DefaultServeMux))
 }
 
 /**
@@ -43,14 +63,15 @@ func openLocalConnection() {
 func logRequest(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-			hah, _ := ioutil.ReadAll(r.Body);
-			// fmt.Println(string(hah)) // {"data":"sss\n"}
+			// Ready the body
+			body, _ := ioutil.ReadAll(r.Body);
 
+			// It it though my struct
 			var msg Message
-			json.Unmarshal(hah, &msg)
+			json.Unmarshal(body, &msg)
 
-			// fmt.Println(msg)
-			fmt.Println(msg.Data)
+			// Display incoming message
+			fmt.Println("INCOMING: " + msg.Data)
 
 	})
 }
@@ -58,20 +79,24 @@ func logRequest(handler http.Handler) http.Handler {
 /**
  * Send a message to the other person
  */
-func sendMsg(server string) {
+func sendMsg(partner string) {
 
+	// Get the message from console
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("\n Message: ")
 	msg, _ := reader.ReadString('\n')
 
-	values := map[string]string{"data": msg}
+	// Run msg through struct
+	values := Message{
+		Data: msg,
+	}
 
 	jsonValue, _ := json.Marshal(values)
 
-	http.Post("http://localhost:7777", "application/json", bytes.NewBuffer(jsonValue))
+	// Send message via post // @TODO working with string as other IP here
+	http.Post(string(partner), "application/json", bytes.NewBuffer(jsonValue))
 
-	// fmt.Print(msg)
-
-	sendMsg(server)
+	// Get ready to send the next message
+	sendMsg(partner)
 
 }
