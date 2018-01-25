@@ -17,3 +17,6 @@ $ bash ./build.sh
 ````javascript
 $ ./bin/peteringram0
 ````
+
+### ToDo
+* add DEP for package managment
