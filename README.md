@@ -1,6 +1,8 @@
-# learning-go
+# peer-to-peer-messaging-go
 
 Small peer to peer messaging application
+
+![alt tag](./demo.png)
 
 ## To Develop
 ````javascript
@@ -9,13 +11,13 @@ $ go run ./src/peteringram0/main.go --port 1234
 
 ## To Build
 ````javascript
-$ export GOPATH=$HOME/code/learning-go
+$ export GOPATH=$HOME/code/peer-to-peer-messaging-go // Change to code path
 $ bash ./build.sh
 ````
 
 ## To Run
 ````javascript
-$ ./bin/peteringram0
+$ ./bin/peteringram0 --port 8881
 ````
 
 ### ToDo
