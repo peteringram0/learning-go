@@ -1,6 +1,6 @@
-# peer-to-peer-messaging-go
+# Peer To Peer Messaging
 
-Small peer to peer messaging application
+Small peer to peer messaging application built to help me learn Golang.
 
 ![alt tag](./demo.png)
 
