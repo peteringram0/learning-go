@@ -11,6 +11,7 @@ import (
 	"flag"
 	"github.com/fatih/color"
 	"strconv"
+	"strings"
 )
 
 /**
@@ -90,11 +91,10 @@ func sendMsg(partner string) {
 	values := Message{
 		Data: msg,
 	}
-
 	jsonValue, _ := json.Marshal(values)
 
 	// Send message via post // @TODO working with string as other IP here
-	http.Post(string(partner), "application/json", bytes.NewBuffer(jsonValue))
+	http.Post(strings.TrimSuffix(partner, "\n"), "application/json", bytes.NewBuffer(jsonValue))
 
 	// Get ready to send the next message
 	sendMsg(partner)
